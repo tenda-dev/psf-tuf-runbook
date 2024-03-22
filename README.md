@@ -1,12 +1,8 @@
 psf-tuf-runbook
 ===============
 
-This repository contains a runbook and supporting program for the Python Software Foundation's
-TUF key generation and signing ceremonies.
-The procedures documented here are designed to implement the security policies for offline keys defined in
-[PEP 458 - Secure PyPI downloads with signed repository metadata](https://www.python.org/dev/peps/pep-0458/)
-
-**Due to COVID-19, this document has been modified for a two person, remote ceremony.**
+This repository contains a runbook and supporting program for the JuliCA key generation and signing ceremonies.
+The procedures documented here are designed to implement the security policies for offline keys for WebTrust CA Audit.
 
 ## Notation
 
@@ -53,22 +49,13 @@ during the pre-ceremony.
 
 1. **DO** take pictures of each HSM, in their tamper-evident bags.
 
-1. **DO** remove `YubiHSM2-1` (keytype: P-256) from its tamper-evident bag and **GO TO**
-[Provisioning the YubiHSM 2](#provisioning-the-yubihsm-2)
-
-1. **DO** remove `YubiHSM2-2` (keytype: P-384) from its tamper-evident bag and **GO TO**
-[Provisioning the YubiHSM 2](#provisioning-the-yubihsm-2)
-
-1. **DO** remove `YubiHSM2-3` (keytype: P-256) from its tamper-evident bag and **GO TO**
-[Provisioning the YubiHSM 2](#provisioning-the-yubihsm-2)
-
-1. **DO** remove `Nitrokey HSM-4` (keytype: P-384) from its tamper-evident bag and **GO TO**
+1. **DO** remove `Nitrokey HSM-1` (keytype: P-384) from its tamper-evident bag and **GO TO**
 [Provisioning the Nitrokey HSM](#provisioning-the-nitrokey-hsm)
 
-1. **DO** remove `Nitrokey HSM-5` (keytype: P-256) from its tamper-evident bag and **GO TO**
+1. **DO** remove `Nitrokey HSM-2` (keytype: P-256) from its tamper-evident bag and **GO TO**
 [Provisioning the Nitrokey HSM](#provisioning-the-nitrokey-hsm)
 
-1. **DO** remove `Nitrokey HSM-6` (keytype: P-384) from its tamper-evident bag and **GO TO**
+1. **DO** remove `Nitrokey HSM-3` (keytype: P-384) from its tamper-evident bag and **GO TO**
 [Provisioning the Nitrokey HSM](#provisioning-the-nitrokey-hsm)
 
 1. **DO** copy the ceremony products to the flash storage stick:
@@ -87,158 +74,6 @@ during the pre-ceremony.
 1. **DO** perform the [post-ceremony steps](#post-ceremony).
 
 1. **END**
-
-## Provisioning the YubiHSM 2
-
-*Time estimate: 10 minutes*.
-
-1. **DO** locate and write down the serial number printed on the YubiHSM 2. Refer to the picture below:
-
-    ![A YubiHSM 2](./assets/yubihsm2.jpg)
-
-    In this picture, the serial number is `7550054`. Note that in later steps the serial number will
-    be 0-padded to 10 digits, like `0007550054`.
-
-1. **IF** the YubiHSM 2 is being reprovisioned due to a compromise or failed ceremony, **THEN** you
-must perform a physical reset.
-
-    1. **DO** touch and hold the metal contact of the YubiHSM 2 for ten (10) seconds as you insert
-    it into the trusted offline computer.
-
-1. **IF** the YubiHSM 2 is being provisioned for the first time, **THEN** insert it into the trusted
-offline computer.
-
-1. **DO** ensure that exactly 1 (one) YubiHSM 2 is inserted into the trusted offline computer.
-
-1. **DO** run the `yubihsm-provision` binary, using your key type according to the following rules:
-
-    * **IF** your keytype is "P-256", **THEN** pass `--type p256`
-    * **IF** your keytype is "P-384", **THEN** pass `--type p384`
-
-    ```bash
-    $ yubihsm-provision --type KEY-TYPE
-    ```
-
-1. **DO** wait for this prompt:
-
-    ```
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !!!                    DANGER!                    !!!
-    !!!                                               !!!
-    !!!   This program will reset and reprovision     !!!
-    !!!   your YubiHSM 2 for TUF purposes.            !!!
-    !!!                                               !!!
-    !!!   Make sure to read the runbook before        !!!
-    !!!   using this program. Failure to do so        !!!
-    !!!   will cause PERMANENT key loss.              !!!
-    !!!                                               !!!
-    !!!   Hit "y" (case insensitive) to continue.     !!!
-    !!!                                               !!!
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ```
-
-1. **DO** hit `y` once ready to continue.
-
-1. **DO** wait for the following output and prompt:
-
-    ```
-    Discovered a Yubico YubiHSM with serial number XXXXXXXXXX
-    We've successfully authenticated with the HSM!
-    Continue with factory reset? This step is IRREVERSIBLE! [y/N]
-    ```
-
-1. **DO** confirm that the serial number in the output matches the serial number written down.
-
-1. **DO** hit `y` once ready to continue.
-
-1. **DO** wait for the following output and prompt:
-
-    ```
-    Success! Giving the HSM 10 seconds to come back online...
-
-    #####################################################
-    ###                                               ###
-    ###   We're going to create a new "auth key"      ###
-    ###   on your YubiHSM.                            ###
-    ###                                               ###
-    ###   This "auth key" will                        ###
-    ###   have a password that you MUST remember      ###
-    ###   OR store securely and will protect the      ###
-    ###   TUF keys that are going to be created.      ###
-    ###                                               ###
-    ###   Hit "y" (case insensitive) to continue.     ###
-    ###                                               ###
-    #####################################################
-    ```
-
-1. **DO** hit `y` once ready to continue.
-
-1. **DO** enter the new authentication key password generated for this YubiHSM during the pre-ceremony.
-
-1. **DO** re-enter the authentication key password.
-
-1. **DO** wait for the following output:
-
-    ```
-    Success! Provisioned a new authentication key as object 2 and deleted the default key
-    Success!
-    We're creating our TUF keys and attestation certificates now.
-    ```
-
-1. **DO** re-enter the authentication key password.
-
-1. **DO** wait for the program to exit.
-
-1. **DO** check for the following files in the runbook directory:
-
-    ```
-    ceremony-products/XXXXXXXXXX/XXXXXXXXXX_cert.der
-    ceremony-products/XXXXXXXXXX/XXXXXXXXXX_root_attestation.der
-    ceremony-products/XXXXXXXXXX/XXXXXXXXXX_root_pubkey.pub
-    ceremony-products/XXXXXXXXXX/XXXXXXXXXX_targets_attestation.der
-    ceremony-products/XXXXXXXXXX/XXXXXXXXXX_targets_pubkey.pub
-    ```
-
-    Where `XXXXXXXXXX` is the 0-prefixed serial number.
-
-1. **DO** change directories to the products directory for the current HSM:
-
-    ```bash
-    cd ceremony-products/XXXXXXXXXX
-    ```
-
-    Where `XXXXXXXXXX` is the 0-prefixed serial number.
-
-1. **DO** run the `raw-ec-points-to-pem` script with each public key generated above, using your key type according to the following rules:
-
-    * **IF** your keytype is "P-256", **THEN** pass `--type p256`
-    * **IF** your keytype is "P-384", **THEN** pass `--type p384`
-
-    ```bash
-    $ raw-ec-points-to-pem --type KEY-TYPE XXXXXXXXXX_root_pubkey.pub
-    $ raw-ec-points-to-pem --type KEY-TYPE XXXXXXXXXX_targets_pubkey.pub
-    ```
-
-1. **DO** confirm that the following files have been generated:
-
-    ```
-    ceremony-products/XXXXXXXXXX/XXXXXXXXXX_root_pubkey.pem
-    ceremony-products/XXXXXXXXXX/XXXXXXXXXX_targets_pubkey.pem
-    ```
-
-1. **DO** change directories back to the runbook directory.
-
-    ```bash
-    cd ~/psf-tuf-runbook
-    ```
-
-1. **DO** remove the HSM.
-
-1. **DO** label a tamper-evident bag with the HSM's signing body ID and 0-prefixed serial number.
-
-1. **DO** seal the provisioned HSM and folded authentication key password in the tamper-evident bag.
-
-1. **DO** hold the sealed tamper-evident bag up to the camera of the communication computer.
 
 ## Provisioning the Nitrokey HSM
 
