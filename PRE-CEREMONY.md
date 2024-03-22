@@ -27,15 +27,10 @@ Confirm the presence of **each** of the following:
 * **Exactly one (1)** Raspberry Pi, Model 3 as the ceremony computer
 * **Exactly one (1)** microSD flash storage card, minimum 32GB
 * **At least one (1)** microSD reader with USB interface
-* **Exactly six (6)** HSMs:
-  * **Exactly three (3)** YubiHSMs, with the following signing body IDs:
-    * `YubiHSM2-1`
-    * `YubiHSM2-2`
-    * `YubiHSM2-3`
   * **Exactly three (3)** Nitrokey HSMs, with the following signing body IDs:
-    * `Nitrokey HSM-4`
-    * `Nitrokey HSM-5`
-    * `Nitrokey HSM-6`
+    * `Nitrokey HSM-1`
+    * `Nitrokey HSM-2`
+    * `Nitrokey HSM-3`
 * **Exactly one (1)** USB flash storage stick, minimum 8GB
 * **At least seven (7)** tamper-evident bags, including evidence labels
 * **At least 12 (12)** sheets of loose-leaf paper
@@ -208,7 +203,7 @@ We will use `/dev/rdiskN` below for the "raw" device, for performance reasons.
     $ diskutil eject /dev/rdiskN
     ```
 
-* Insert the microSD card into the Raspberry Pi.
+* Insert the Live USB into the Operating Computer.
 
 * Connect the Raspberry Pi to all peripherals **except** power and the flash stick.
 
