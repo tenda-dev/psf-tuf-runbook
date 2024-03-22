@@ -1,4 +1,4 @@
-psf-tuf-runbook
+WEBTRUST-KGC-SCRIPT
 ===============
 
 This repository contains a runbook and supporting program for the JuliCA key generation and signing ceremonies.
@@ -48,6 +48,8 @@ during the pre-ceremony.
     ```
 
 1. **DO** take pictures of each HSM, in their tamper-evident bags.
+
+![image](https://github.com/tenda-dev/psf-tuf-runbook/assets/50552789/1d1cd036-ca50-46f3-90dc-8f8879882ec3)
 
 1. **DO** remove `Nitrokey HSM-1` (keytype: P-384) from its tamper-evident bag and **GO TO**
 [Provisioning the Nitrokey HSM](#provisioning-the-nitrokey-hsm)
